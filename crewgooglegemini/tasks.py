@@ -4,38 +4,41 @@ from agents import researcher, writer, package_planner, summarize
 
 # Research task
 research_task = Task(
-  description="ช่วยแนะนำสถานที่ท่องเที่ยวยอดนิยมในจังหวัดภาคเหนือ โดยระบุข้อมูลสำคัญ เช่น ชื่อสถานที่,ที่พักและร้านอาหารแนะนำ, ประเภท, จุดเด่น,เวลาเปิด-ปิด และพิกัดจากลิงค์google maps เพื่อให้ผู้ใช้สามารถวางแผนการเดินทางได้อย่างมีประสิทธิภาพ",
-  expected_output='ค้นหาสถานที่ท่องเที่ยว ที่พัก ร้านอาหาร โดยอ้างอิงจาก {location_input} สำหรับ {day_input} วัน จำนวน {people_input} คน ความสนใจ {interest_input} จำเป็นต้องค้นหาสถานที่ท่องเที่ยวที่เป็นข้อมูลที่ถูกต้องและมีความสำคัญพร้อมรายละเอียดที่เป็นประโยชน์แก่นักเที่ยว',
-  tools=[tool],
-  agent=researcher,
+    description="ค้นหาสถานที่ท่องเที่ยวยอดนิยมในจังหวัดภาคเหนือ พร้อมที่พักและร้านอาหารแนะนำ โดยระบุชื่อสถานที่, ประเภท, จุดเด่น, เวลาเปิด-ปิด และพิกัด Google Maps เพื่อช่วยวางแผนการเดินทาง",
+    expected_output="ค้นหาสถานที่ท่องเที่ยว ที่พัก ร้านอาหาร จาก {location_input} สำหรับ {day_input} วัน จำนวน {people_input} คน พร้อมรายละเอียดที่สอดคล้องกับความสนใจ {interest_input}",
+    tools=[tool],
+    agent=researcher,
+    max_token=500
 )
 
 # Writing task with language model configuration
 write_task = Task(
-  description="นักเขียนที่ชำนาญในการเขียนสถานที่ท่องเที่ยวยอดนิยมในจังหวัดที่ได้รับมา และมีความสามารถในการเขียนสถานที่ท่องเที่ยวยอดนิยมในจังหวัดนี้ให้สรุปและเข้าใจง่าย",
-  expected_output="เขียนสถานที่ท่องเที่ยวตามข้อมูลที่ได้รับมา โดยนำข้อมูลสถานที่ท่องเที่ยวที่ได้รับมา มาเขียนสรุป เข้าใจง่าย และเป็นภาษาไทย",
-  tools=[tool],
-  agent=writer,
-  async_execution=False,
-  
+    description="นักเขียนที่เชี่ยวชาญในการสรุปข้อมูลสถานที่ท่องเที่ยวยอดนิยมในจังหวัดที่กำหนด โดยสรุปเนื้อหาให้อ่านง่ายและเข้าใจได้ในภาษาไทย",
+    expected_output="สรุปข้อมูลสถานที่ท่องเที่ยวตามที่ได้รับให้อ่านง่าย ชัดเจน และเป็นภาษาไทย",
+    tools=[tool],
+    agent=writer,
+    async_execution=False,
+    max_token=500
 )
 
 # Package planner task
 package_planner_task = Task(
-  description="ช่วยวิเคราะห์สถานที่ท่องเที่ยวยอดนิยมในจังหวัดที่ได้รับ มาวิเคราะห์ เพื่อนำข้อมูลสถานที่ท่องเที่ยวมาสรุปให้นักท่องเที่ยว",
-  expected_output="วางแผนการท่องเที่ยวตามจำนวนวัน {day_input}กำนดเวลาในแต่ละวัน ในจังหวัด{location_input} โดยระบุข้อมูลสำคัญ เช่น ชื่อสถานที่,ที่พักและร้านอาหารแนะนำในแต่ละวัน,เวลาเปิด-ปิด และพิกัดจากลิงค์google maps มาวางแผนการท่องเที่ยวให้เหมาะสม และเข้าใจง่าย เป็นภาษาไทย",
-  tools=[tool],
-  agent=package_planner,
-  async_execution=False,
-  output_file='planner.md'  # Example of output customization
+    description="วิเคราะห์และสรุปสถานที่ท่องเที่ยวยอดนิยมในจังหวัดที่กำหนด เพื่อวางแผนการเดินทางที่เหมาะสมสำหรับนักท่องเที่ยว",
+    expected_output="วางแผนการท่องเที่ยว {day_input} วันในจังหวัด {location_input} โดยระบุชื่อสถานที่, ที่พักและร้านอาหารในแต่ละวัน พร้อมเวลาเปิด-ปิด, ราคาที่พักต่อคืน และพิกัด Google Maps สรุปเนื้อหาให้อ่านง่ายและเป็นภาษาไทย",
+    tools=[tool],
+    agent=package_planner,
+    async_execution=False,
+    output_file="planner.md",
+    max_token=500
 )
+
 
 # Summarize travel task
 summarize_travel_task = Task(
-  description="สรุปสถานที่ท่องเที่ยวที่ได้รับ โดยนำสถานที่ท่องเที่ยวที่ได้รับมาสรุปให้สั้นกระชับและเข้าใจง่าย",
-  expected_output="สรุปการเดินทางท่องเที่ยวในจังหวัด {location_input} สำหรับ {day_input} วัน จำนวน {people_input} คน ความสนใจ {interest_input} โดยสรุปข้อมูลที่เป็นประโยชน์และเข้าใจง่าย",
-  tools=[tool],
-  agent=summarize,
-  async_execution=False,
- 
+    description="สรุปข้อมูลสถานที่ท่องเที่ยวที่กำหนดให้อย่างกระชับและเข้าใจง่าย",
+    expected_output="สรุปแผนการท่องเที่ยวในจังหวัด {location_input} สำหรับ {day_input} วัน จำนวน {people_input} คน พร้อมรายละเอียดที่ตรงกับความสนใจ {interest_input} โดยเน้นข้อมูลที่เป็นประโยชน์และเข้าใจง่าย",
+    tools=[tool],
+    agent=summarize,
+    async_execution=False,
+    max_token=500
 )
